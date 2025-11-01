@@ -25,6 +25,7 @@ public class JSONObject extends org.json.simple.JSONObject {
      */
     public JSONObject(Map map) {
         super(map);
+        wrapNestedObjects();
     }
 
     /**
@@ -38,6 +39,7 @@ public class JSONObject extends org.json.simple.JSONObject {
         if (obj != null) {
             if (obj instanceof org.json.simple.JSONObject) {
                 super.putAll((org.json.simple.JSONObject) obj);
+                wrapNestedObjects();
             }
         }
     }
@@ -51,7 +53,37 @@ public class JSONObject extends org.json.simple.JSONObject {
         super();
         if (obj != null) {
             super.putAll(obj);
+            wrapNestedObjects();
         }
+    }
+
+    /**
+     * Wraps all nested org.json.simple.JSONObject instances with this custom JSONObject class.
+     */
+    private void wrapNestedObjects() {
+        for (Object key : super.keySet()) {
+            Object value = super.get(key);
+            if (value instanceof org.json.simple.JSONObject && !(value instanceof JSONObject)) {
+                super.put(key, new JSONObject((org.json.simple.JSONObject) value));
+            }
+        }
+    }
+
+    /**
+     * Overrides the get method to always return custom JSONObject instances for nested objects.
+     *
+     * @param key The key whose associated value is to be returned.
+     * @return The value associated with the key, with nested JSONObjects wrapped in the custom class.
+     */
+    @Override
+    public Object get(Object key) {
+        Object value = super.get(key);
+        if (value instanceof org.json.simple.JSONObject && !(value instanceof JSONObject)) {
+            JSONObject wrapped = new JSONObject((org.json.simple.JSONObject) value);
+            super.put(key, wrapped);
+            return wrapped;
+        }
+        return value;
     }
 
     /**
@@ -99,7 +131,7 @@ public class JSONObject extends org.json.simple.JSONObject {
                 if (value instanceof org.json.simple.JSONObject && path.length > 1) {
                     return findObject((org.json.simple.JSONObject) value, Arrays.copyOfRange(path, 1, path.length));
                 } else {
-                    return value.getClass() == org.json.simple.JSONObject.class ? new JSONObject((org.json.simple.JSONObject) value) : value;
+                    return value instanceof org.json.simple.JSONObject && !(value instanceof JSONObject) ? new JSONObject((org.json.simple.JSONObject) value) : value;
                 }
             }
         }
@@ -124,6 +156,21 @@ public class JSONObject extends org.json.simple.JSONObject {
         changeObject(this, path.split("\\."), newValue);
     }
 
+    /**
+     * Overrides the put method to wrap org.json.simple.JSONObject values in the custom JSONObject class.
+     *
+     * @param key   The key with which the specified value is to be associated.
+     * @param value The value to be associated with the specified key.
+     * @return The previous value associated with the key, or null if there was no mapping.
+     */
+    @Override
+    public Object put(Object key, Object value) {
+        if (value instanceof org.json.simple.JSONObject && !(value instanceof JSONObject)) {
+            value = new JSONObject((org.json.simple.JSONObject) value);
+        }
+        return super.put(key, value);
+    }
+
     private void changeObject(org.json.simple.JSONObject current, String[] path, Object newValue) {
         if (current == null || path == null || path.length == 0) {
             return;
@@ -143,6 +190,9 @@ public class JSONObject extends org.json.simple.JSONObject {
             if (newValue == null) {
                 current.remove(currentPath);
             } else {
+                if (newValue instanceof org.json.simple.JSONObject && !(newValue instanceof JSONObject)) {
+                    newValue = new JSONObject((org.json.simple.JSONObject) newValue);
+                }
                 current.put(currentPath, newValue);
             }
         }
