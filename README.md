@@ -1,6 +1,6 @@
 # JSON.simple Extended
 
-![Version](https://img.shields.io/badge/version-1.0.1-blue)
+![Version](https://img.shields.io/badge/version-1.0.2-blue)
 
 An extended version of the [JSON.simple](https://github.com/fangyidong/json-simple) library, with added features to simplify working with JSON in Java.
 
@@ -12,7 +12,7 @@ An extended version of the [JSON.simple](https://github.com/fangyidong/json-simp
 
 ## Manual installation
 
-To install manually, download the jar by clicking [here](https://nexus.jasonkaranik.com/service/rest/v1/search/assets/download?repository=maven-releases&maven.groupId=com.jasonkaranik&maven.artifactId=json-simple-extended&version=1.0.1&maven.extension=jar&maven.classifier=) and add it to your project's classpath.
+To install manually, download the jar by clicking [here](https://nexus.jasonkaranik.com/service/rest/v1/search/assets/download?repository=maven-releases&maven.groupId=com.jasonkaranik&maven.artifactId=json-simple-extended&version=1.0.2&maven.extension=jar&maven.classifier=) and add it to your project's classpath.
 
 ## Maven:
 
@@ -32,7 +32,7 @@ Add the following repository and dependency inside the existing `<repositories>`
     <dependency>
         <groupId>com.jasonkaranik</groupId>
         <artifactId>json-simple-extended</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
     </dependency>
 </dependencies>
 ```
@@ -51,7 +51,7 @@ repositories {
 
 dependencies {
     ...
-    implementation "com.jasonkaranik:json-simple-extended:1.0.1"
+    implementation "com.jasonkaranik:json-simple-extended:1.0.2"
 }
 ```
 
